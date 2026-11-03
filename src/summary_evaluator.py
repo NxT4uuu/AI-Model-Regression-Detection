@@ -1,5 +1,6 @@
 import json
 from .email_classifier import client
+from .api_retry import retry_api_call
 
 SUMMARY_JUDGE_PROMPT = """
 You are an impartial evaluator assessing the relevance and accuracy
@@ -56,7 +57,8 @@ def evaluate_summary(original_email, expected_summary, generated_summary):
                     Evaluate the generated summary.
                 """
 
-    response = client.chat.completions.create(
+    response = retry_api_call(
+        client.chat.completions.create,
         model="openai/gpt-oss-20b",
         messages=[
             {

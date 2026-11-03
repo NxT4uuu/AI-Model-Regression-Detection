@@ -7,6 +7,8 @@ from groq import Groq
 import yaml
 import time
 
+from .api_retry import retry_api_call
+
 load_dotenv(dotenv_path=ENV_FILE)
 
 api_key = os.getenv("GROQ_API_KEY")
@@ -50,7 +52,8 @@ def classify_email(email: str, config: dict | None = None) -> dict:
     # Measure API latency
     start_time = time.perf_counter()
 
-    response = client.chat.completions.create(
+    response = retry_api_call(
+        client.chat.completions.create,
         model="openai/gpt-oss-20b",
         messages=[
             {"role": "system", "content": config["system_prompt"]},
