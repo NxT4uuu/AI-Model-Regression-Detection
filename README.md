@@ -1,129 +1,344 @@
+# AI Model Regression Detection System
 
-# Model Regression Detection System
+An automated evaluation and regression detection pipeline for Large Language Model (LLM)-powered applications. The system evaluates versioned prompts against a golden dataset, measures output quality, identifies performance regressions, generates comparison reports, and makes deployment decisions.
 
 ## 1. Project Overview
 
-The Model Regression Detection System is a Python-based project designed to identify performance degradation between a baseline machine-learning model and a newer model.
+The AI Model Regression Detection System is a Python-based project designed to detect performance degradation in LLM-powered applications when prompts or model configurations change.
 
-It compares model accuracy, measures the performance drop, identifies misclassified samples, and reports whether the drop exceeds a configurable threshold.
+The project implements an email classification system as its evaluation target. It compares a baseline prompt version against a candidate version using a labelled golden dataset.
 
-The project also demonstrates regression detection using machine-learning models built with scikit-learn.
+The evaluation pipeline measures:
+- Classification accuracy.
+- Generated summary quality using an LLM-as-a-Judge.
+- Summary pass rate.
+- Individual test-case regressions and improvements.
+- Per-category performance changes.
 
-## 2. Features
+Based on these results, the system determines whether a candidate prompt should be approved or blocked.
 
-- Calculate classification accuracy.
-- Compare old and new model predictions.
-- Detect performance regression using a configurable threshold.
-- Compare multiple model versions against a baseline.
-- Validate accuracy values, thresholds, and input datasets.
-- Generate reports containing performance metrics and failed cases.
-- Save and load evaluation results using JSON.
-- Handle missing files and malformed JSON.
-- Accept baseline accuracy and threshold values through command-line arguments.
-- Run automated unit tests using Python's `unittest` framework.
-- Demonstrate regression detection with scikit-learn decision trees.
+The project also includes historical evaluation storage, performance drift detection, HTML report generation, and Slack notifications.
 
-## 3. Project Structure
+## 2. Key Features
+
+- **LLM-Based Email Classification:** Classifies customer support emails into Billing, Technical, Account, and General categories.
+- **Prompt Version Management:** Maintains multiple prompt configurations using YAML files.
+- **Golden Dataset:** Evaluates prompt versions against 50 labelled test cases.
+- **Automated Evaluation:** Measures classification accuracy, execution latency, token usage, and summary quality.
+- **LLM-as-a-Judge:** Evaluates generated summaries using a structured five-point scoring rubric.
+- **Regression Detection:** Compares baseline and candidate evaluation results to identify regressions and improvements.
+- **Category-Level Analysis:** Measures performance changes across individual email categories.
+- **Evaluation Validation:** Checks test-case consistency, duplicate IDs, missing records, and failed evaluations.
+- **Performance Drift Detection:** Uses historical evaluation results and moving averages to identify potential performance degradation.
+- **SQLite Database:** Stores historical evaluation runs.
+- **HTML Regression Reports:** Generates comparison reports with performance metrics and visualizations.
+- **Slack Integration:** Sends automated notifications containing evaluation and deployment decisions.
+- **Deployment Gate:** Approves or blocks candidate versions based on regression severity and evaluation validity.
+- **Pipeline Orchestration:** Integrates evaluation, comparison, reporting, deployment decisions, and notifications into one execution workflow.
+- **Automated Unit Testing:** Uses Python's `unittest` framework to test core components.
+
+## 3. Technology Stack
+
+| Component | Technology |
+|---|---|
+| Programming Language | Python 3 |
+| LLM API | Groq API |
+| LLM Model | `openai/gpt-oss-20b` |
+| Prompt Configuration | YAML |
+| Dataset Storage | JSON |
+| Evaluation Database | SQLite |
+| Summary Evaluation | LLM-as-a-Judge |
+| HTML Report Generation | Jinja2 |
+| Report Visualization | Chart.js |
+| Notifications | Slack Incoming Webhooks |
+| Testing | Python unittest |
+| Environment Configuration | python-dotenv |
+
+## 4. Project Structure
 
 ```text
 Project_1/
-├── regression_detector.py
-├── test_regression_detector.py
-├── ml_model_demo.py
-├── evaluation_results.json
+│
+├── data/
+│   └── golden_dataset.json
+│
+├── database/
+│   └── evaluation_history.db
+│
+├── prompts/
+│   ├── v1.yaml
+│   ├── v2.yaml
+│   └── v3.yaml
+│
+├── reports/
+│   ├── evaluation_results_v1.json
+│   ├── evaluation_results_v2.json
+│   ├── evaluation_results_v3.json
+│   ├── regression_comparison.json
+│   └── regression_report.html
+│
+├── scripts/
+│   ├── check_db.py
+│   ├── repair_db.py
+│   ├── test_slack.py
+│   └── verify_schema.py
+│
+├── src/
+│   ├── email_classifier.py
+│   ├── dataset_loader.py
+│   ├── evaluation_runner.py
+│   ├── summary_evaluator.py
+│   ├── regression_detector.py
+│   ├── regression_comparator.py
+│   ├── drift_detector.py
+│   ├── database.py
+│   ├── deployment_gate.py
+│   ├── report_generator.py
+│   ├── slack_notifier.py
+│   ├── pipeline.py
+│   └── paths.py
+│
+├── static/
+│   ├── css/
+│   │   └── report_style.css
+│   └── js/
+│       └── performance_chart.js
+│
+├── templates/
+│   └── regression_report.html
+│
+├── tests/
+│   ├── test_deployment_gate.py
+│   ├── test_drift_detector.py
+│   ├── test_pipeline.py
+│   └── test_regression_comparator.py
+│
+├── .env
+├── .gitignore
+├── requirements.txt
 └── README.md
 ```
 
-## 4. Requirements
+## 5. Installation and Setup
 
-- Python 3
-- scikit-learn
-- Python standard-library modules, including `json`, `argparse`, and `unittest`
+### Prerequisites
 
-## 5. Setup
+- Python 3.10 or later.
+- pip.
+- A Groq API key.
+- A Slack Incoming Webhook URL for notifications.
 
-Activate the project's virtual environment.
+### Clone the Repository
+
+```bash
+git clone <YOUR_GITHUB_REPOSITORY_URL>
+cd AI-Model-Regression-Detection
+```
+
+### Create a Virtual Environment
 
 On Windows PowerShell:
 
 ```powershell
+python -m venv env1
 .\env1\Scripts\Activate.ps1
 ```
 
-If the virtual environment is located elsewhere, use its actual path.
-
-Check the scikit-learn installation:
+### Install Dependencies
 
 ```powershell
-python -c "import sklearn; print(sklearn.__version__)"
+pip install -r requirements.txt
 ```
 
-## 6. Run the Regression Detector
+### Configure Environment Variables
 
-Run the main program with its default configuration:
+Create a `.env` file in the project root:
+
+```env
+GROQ_API_KEY=your_groq_api_key
+SLACK_WEBHOOK_URL=your_slack_webhook_url
+```
+
+Replace the placeholder values with your actual credentials.
+
+**Security:** Never commit `.env` or expose API keys and webhook URLs in source code or public repositories.
+
+## 6. Golden Dataset
+
+The project uses a JSON-based golden dataset containing 50 labelled customer support email examples.
+
+Each test case includes:
+- Unique test-case ID.
+- Original email input.
+- Expected classification category.
+- Expected summary.
+- Expected difficulty.
+- Additional evaluation notes.
+
+The four classification categories are:
+
+1. Billing
+2. Technical
+3. Account
+4. General
+
+Validate the dataset using:
 
 ```powershell
-python regression_detector.py
+python -m src.dataset_loader
 ```
 
-Specify a custom baseline accuracy and threshold:
+## 7. Run the Evaluation
+
+Evaluate a prompt version against the golden dataset:
 
 ```powershell
-python regression_detector.py --baseline 0.95 --threshold 0.05
+python -m src.evaluation_runner --prompt prompts/v1.yaml
 ```
 
-Accuracy and threshold values are expressed as fractions between 0 and 1.
-
-## 7. Run the Machine-Learning Demonstration
+For other versions:
 
 ```powershell
-python ml_model_demo.py
+python -m src.evaluation_runner --prompt prompts/v2.yaml
+
+python -m src.evaluation_runner --prompt prompts/v3.yaml
 ```
 
-The demonstration trains decision-tree classifiers on the Iris dataset, compares their predictions, and reports changes in classification accuracy.
+The evaluation runner:
+- Loads the golden dataset.
+- Loads the selected prompt configuration.
+- Executes email classification.
+- Evaluates generated summaries.
+- Calculates performance metrics.
+- Saves evaluation results as JSON.
+- Stores evaluation history in SQLite.
 
-It also evaluates tree depths of 1, 2, and 3 to illustrate how model configuration affects performance on the selected train/test split.
+## 8. Compare Prompt Versions
 
-## 8. Run Unit Tests
+Compare a baseline prompt against a candidate prompt:
 
 ```powershell
-python -m unittest -v
+python -m src.regression_comparator --baseline v1 --candidate v2
 ```
 
-The project currently has 12 unit tests covering accuracy calculation, regression detection, input validation, multiple-version comparison, and boundary conditions.
+Example comparison:
 
-The latest recorded test run passed all 12 tests.
+```powershell
+python -m src.regression_comparator --baseline v1 --candidate v3
+```
 
-## 9. Example Results
+The comparator identifies:
+- Classification regressions.
+- Classification improvements.
+- Unchanged test cases.
+- Per-category accuracy changes.
+- Summary quality changes.
+- Missing or unexpected test cases.
+- Evaluation validity.
+- Overall regression severity.
 
-In the demonstrated Iris experiment:
+## 9. Generate HTML Regression Reports
 
-| Model configuration    | Test accuracy |
-| ---------------------- | ------------: |
-| Decision tree, depth 1 |         63.3% |
-| Decision tree, depth 2 |         96.7% |
-| Decision tree, depth 3 |        100.0% |
+Generate a comparison report:
 
-With a baseline accuracy of 100% and a threshold of 5 percentage points, the depth-1 model triggered regression detection, while the depth-2 and depth-3 models did not.
+```powershell
+python -m src.report_generator --baseline v1 --candidate v3
+```
 
-These results are specific to the experiment's selected train/test split and random seed; they are not a guarantee of performance on other datasets.
+The generated report is saved at:
 
-## 10. Limitations
+```text
+reports/regression_report.html
+```
 
-- Accuracy is the primary evaluation metric in the current implementation.
-- The Iris experiment uses a single train/test split.
-- The demonstration uses a small, built-in dataset.
-- The current CLI uses predefined model versions rather than loading arbitrary trained models from user-supplied files.
+The report presents baseline and candidate performance metrics, regression details, summary evaluation results, and visual comparisons.
 
-## 11. Future Improvements
+## 10. Deployment Gate
 
-- Add support for precision, recall, F1-score, and other metrics.
-- Add cross-validation and repeated evaluation.
-- Store historical evaluation runs with timestamps.
-- Add automated tests for JSON persistence.
-- Support configurable datasets and trained model artifacts.
-- Integrate the detector into a continuous integration pipeline.
+The deployment gate evaluates whether a candidate version should be approved or blocked.
 
-## 12. Learning Outcomes
+Run:
 
-This project demonstrates Python programming, input validation, exception handling, unit testing, JSON persistence, command-line interfaces, classification metrics, and basic machine-learning model evaluation.
+```powershell
+python -m src.deployment_gate
+```
+
+The decision depends on:
+- Regression severity.
+- Evaluation validity.
+- Missing or invalid evaluation records.
+
+Possible decisions include:
+
+| Decision | Meaning |
+|---|---|
+| APPROVED | Candidate passes regression evaluation. |
+| APPROVED_WITH_WARNING | Candidate is approved with a performance warning. |
+| BLOCKED | Candidate fails the deployment criteria. |
+
+## 11. Run the Complete Pipeline
+
+The pipeline orchestrates the major project components.
+
+Run:
+
+```powershell
+python -m src.pipeline --baseline v1 --candidate v3
+```
+
+The pipeline executes the following sequence:
+
+1. Evaluate the candidate prompt.
+2. Compare candidate and baseline results.
+3. Generate the HTML regression report.
+4. Apply the deployment gate.
+5. Send a Slack notification.
+6. Display the final pipeline status.
+
+A candidate that fails the deployment criteria is blocked.
+
+## 12. Performance Drift Detection
+
+The drift detector uses historical evaluation results stored in SQLite.
+
+It calculates moving averages and compares recent performance against previous evaluation windows to identify potential degradation.
+
+The current implementation uses a seven-run window and requires sufficient historical evaluation data before detecting drift.
+
+## 13. Run Unit Tests
+
+Execute the test suite:
+
+```powershell
+python -m unittest discover -s tests -v
+```
+
+The tests cover regression comparison, deployment decisions, performance drift detection, and pipeline orchestration.
+
+## 14. Limitations
+
+- The current implementation uses an email classification task as its evaluation target.
+- The golden dataset contains 50 test cases and requires further expansion and manual validation.
+- LLM outputs are nondeterministic and may vary between evaluation runs.
+- Summary quality is evaluated using an LLM-as-a-Judge and may be affected by judge-model bias.
+- Evaluation results depend on API availability, model behaviour, and network conditions.
+- Performance drift detection requires sufficient comparable historical evaluation runs.
+- The current implementation does not establish production-level reliability from the available benchmark results.
+
+## 15. Future Improvements
+
+- Integrate GitHub Actions for automated CI/CD execution.
+- Implement Docker-based deployment and reproducible environments.
+- Expand and improve the golden dataset.
+- Introduce dataset fingerprinting and evaluation reproducibility checks.
+- Add repeated evaluations to measure LLM output variability.
+- Improve drift detection for gradual performance changes.
+- Add more evaluation metrics and configurable quality thresholds.
+- Improve automated regression testing with deterministic synthetic test cases.
+- Support additional LLM-powered applications beyond email classification.
+
+## 16. Learning Outcomes
+
+This project demonstrates practical implementation of LLM evaluation pipelines, prompt versioning, automated quality assessment, regression detection, LLM-as-a-Judge, performance monitoring, database integration, HTML reporting, API integration, deployment gating, and software testing.
+
+It explores how changes in prompts and model configurations can be evaluated systematically before being accepted into an application workflow.
