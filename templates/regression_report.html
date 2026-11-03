@@ -1,0 +1,143 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Model Regression Detection Report</title>
+
+    <link rel="stylesheet"
+          href="../static/css/report_style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="container">
+
+        <h1>Model Regression Detection Report</h1>
+
+        <section class="metadata">
+            <p>Baseline Version: {{ baseline.prompt_version }}</p>
+            <p>Candidate Version: {{ candidate.prompt_version }}</p>
+
+            <p>Report Status:
+                <span class="status">
+                    {{ comparison.severity | upper }}
+                </span>
+            </p>
+        </section>
+
+        <section class="scorecard">
+            <h2>Evaluation Scorecard</h2>
+
+            <table>
+                <tr>
+                    <th>Metric</th>
+                    <th>Baseline ({{ baseline.prompt_version }})</th>
+                    <th>Candidate ({{ candidate.prompt_version }})</th>
+                </tr>
+
+                <tr>
+                    <td>Category Accuracy</td>
+                    <td>{{ "%.2f%%" | format(baseline.accuracy * 100) }}</td>
+                    <td>{{ "%.2f%%" | format(candidate.accuracy * 100) }}</td>
+                </tr>
+
+                <tr>
+                    <td>Average Summary Score</td>
+                    <td>{{ baseline.average_summary_score }}</td>
+                    <td>{{ candidate.average_summary_score }}</td>
+                </tr>
+
+                <tr>
+                    <td>Summary Pass Rate</td>
+                    <td>{{ "%.2f%%" | format(baseline.summary_pass_rate * 100) }}</td>
+                    <td>{{ "%.2f%%" | format(candidate.summary_pass_rate * 100) }}</td>
+                </tr>
+
+                <tr>
+                    <td>Evaluation Cases</td>
+                    <td>{{ baseline.total_cases }}</td>
+                    <td>{{ candidate.total_cases }}</td>
+                </tr>
+            </table>
+        </section>
+
+        <section class="chart-container">
+            <h2>Performance Comparison</h2>
+            <canvas id="performanceChart"></canvas>
+        </section>
+
+        <section class="regression-details">
+            <h2>Regression Details</h2>
+
+            {% set affected_ids =
+                comparison.regressions + comparison.summary_regressions %}
+
+            {% if affected_ids %}
+
+            <table>
+                <tr>
+                    <th>Test Case</th>
+                    <th>Baseline Category</th>
+                    <th>Candidate Category</th>
+                    <th>Baseline Summary</th>
+                    <th>Candidate Summary</th>
+                </tr>
+
+                {% for test_id in affected_ids %}
+                    {% set old = baseline.results
+                        | selectattr("test_case_id", "equalto", test_id)
+                        | first %}
+
+                    {% set new = candidate.results
+                        | selectattr("test_case_id", "equalto", test_id)
+                        | first %}
+
+                    {% if old and new %}
+                    <tr>
+                        <td>{{ test_id }}</td>
+                        <td>{{ old.predicted_category }}</td>
+                        <td>{{ new.predicted_category }}</td>
+                        <td>{{ old.predicted_summary }}</td>
+                        <td>{{ new.predicted_summary }}</td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+            </table>
+
+            {% else %}
+                <p>No classification or summary regressions detected.</p>
+            {% endif %}
+        </section>
+
+    </div>
+
+    <script>
+        window.performanceData = {
+            labels: [
+                "Category Accuracy",
+                "Summary Pass Rate"
+            ],
+
+            baseline: [
+                {{ baseline.accuracy * 100 }},
+                {{ baseline.summary_pass_rate * 100 }}
+            ],
+
+            candidate: [
+                {{ candidate.accuracy * 100 }},
+                {{ candidate.summary_pass_rate * 100 }}
+            ],
+
+            baselineLabel: "Baseline {{ baseline.prompt_version }}",
+            candidateLabel: "Candidate {{ candidate.prompt_version }}"
+        };
+    </script>
+
+    <script src="../static/js/performance_chart.js"></script>
+
+</body>
+</html>

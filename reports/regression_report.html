@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Model Regression Detection Report</title>
+
+    <link rel="stylesheet"
+          href="../static/css/report_style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="container">
+
+        <h1>Model Regression Detection Report</h1>
+
+        <section class="metadata">
+            <p>Baseline Version: v1</p>
+            <p>Candidate Version: v3</p>
+
+            <p>Report Status:
+                <span class="status">
+                    PASSED
+                </span>
+            </p>
+        </section>
+
+        <section class="scorecard">
+            <h2>Evaluation Scorecard</h2>
+
+            <table>
+                <tr>
+                    <th>Metric</th>
+                    <th>Baseline (v1)</th>
+                    <th>Candidate (v3)</th>
+                </tr>
+
+                <tr>
+                    <td>Category Accuracy</td>
+                    <td>98.00%</td>
+                    <td>100.00%</td>
+                </tr>
+
+                <tr>
+                    <td>Average Summary Score</td>
+                    <td>4.96</td>
+                    <td>4.98</td>
+                </tr>
+
+                <tr>
+                    <td>Summary Pass Rate</td>
+                    <td>100.00%</td>
+                    <td>100.00%</td>
+                </tr>
+
+                <tr>
+                    <td>Evaluation Cases</td>
+                    <td>50</td>
+                    <td>50</td>
+                </tr>
+            </table>
+        </section>
+
+        <section class="chart-container">
+            <h2>Performance Comparison</h2>
+            <canvas id="performanceChart"></canvas>
+        </section>
+
+        <section class="regression-details">
+            <h2>Regression Details</h2>
+
+            
+
+            
+                <p>No classification or summary regressions detected.</p>
+            
+        </section>
+
+    </div>
+
+    <script>
+        window.performanceData = {
+            labels: [
+                "Category Accuracy",
+                "Summary Pass Rate"
+            ],
+
+            baseline: [
+                98.0,
+                100.0
+            ],
+
+            candidate: [
+                100.0,
+                100.0
+            ],
+
+            baselineLabel: "Baseline v1",
+            candidateLabel: "Candidate v3"
+        };
+    </script>
+
+    <script src="../static/js/performance_chart.js"></script>
+
+</body>
+</html>

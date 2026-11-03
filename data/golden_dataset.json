@@ -1,0 +1,502 @@
+[
+    {
+        "id": "email_001",
+        "input": "I was charged twice for my monthly subscription this morning. Please reverse the duplicate payment.",
+        "expected_output": {
+            "category": "billing",
+            "summary": "The customer reports a duplicate subscription charge and requests a refund of the extra payment."
+        },
+        "expected_difficulty": "easy",
+        "notes": "Existing baseline case; duplicate payment is clearly a billing issue."
+    },
+    {
+        "id": "email_002",
+        "input": "The app crashes every time I try to upload a photo. I have restarted my phone, but it still happens.",
+        "expected_output": {
+            "category": "technical",
+            "summary": "The customer reports that the app repeatedly crashes during photo uploads despite restarting the phone."
+        },
+        "expected_difficulty": "easy",
+        "notes": "Existing baseline case; app malfunction is clearly technical."
+    },
+    {
+        "id": "email_003",
+        "input": "I cannot reset my password. The reset link says it has expired even when I open it immediately.",
+        "expected_output": {
+            "category": "account",
+            "summary": "The customer cannot reset their password because the reset link is reported as expired."
+        },
+        "expected_difficulty": "medium",
+        "notes": "Existing baseline case; authentication and password access belong to account support."
+    },
+    {
+        "id": "email_004",
+        "input": "Do you offer a student discount, and which subscription plans are eligible?",
+        "expected_output": {
+            "category": "general",
+            "summary": "The customer asks whether student discounts are available and which plans qualify."
+        },
+        "expected_difficulty": "easy",
+        "notes": "Existing baseline case; informational question without a reported payment issue."
+    },
+    {
+        "id": "email_005",
+        "input": "Great, another charge after I cancelled last week. Apparently cancelling means nothing. Refund it.",
+        "expected_output": {
+            "category": "billing",
+            "summary": "The customer says they were charged after cancelling and requests a refund."
+        },
+        "expected_difficulty": "medium",
+        "notes": "Existing baseline case; sarcasm should not distract from the post-cancellation charge."
+    },
+    {
+        "id": "email_006",
+        "input": "My invoice says $49.99, but my card was charged $59.99. Can you explain the extra ten dollars?",
+        "expected_output": {
+            "category": "billing",
+            "summary": "The customer reports that the card charge exceeds the invoice amount and asks for an explanation."
+        },
+        "expected_difficulty": "easy",
+        "notes": "Compare invoice amount with actual charge; clearly billing."
+    },
+    {
+        "id": "email_007",
+        "input": "I upgraded yesterday but was billed for the full annual plan and the monthly plan. Is that right?",
+        "expected_output": {
+            "category": "billing",
+            "summary": "The customer appears to have been charged for both monthly and annual plans after upgrading."
+        },
+        "expected_difficulty": "medium",
+        "notes": "Potential overlapping subscription charges."
+    },
+    {
+        "id": "email_008",
+        "input": "Please send me a copy of the receipt for order 78421. I need it for reimbursement.",
+        "expected_output": {
+            "category": "billing",
+            "summary": "The customer requests a receipt for a previous order for reimbursement purposes."
+        },
+        "expected_difficulty": "easy",
+        "notes": "Invoice and receipt requests are billing-related."
+    },
+    {
+        "id": "email_009",
+        "input": "The refund was approved ten days ago, but the money has not appeared in my bank account.",
+        "expected_output": {
+            "category": "billing",
+            "summary": "The customer says an approved refund has not yet appeared in their bank account."
+        },
+        "expected_difficulty": "easy",
+        "notes": "Refund processing and payment status."
+    },
+    {
+        "id": "email_010",
+        "input": "I don't recognize a payment of 18.50 from your company dated 14 October. What is it for?",
+        "expected_output": {
+            "category": "billing",
+            "summary": "The customer asks about an unrecognized charge from the company."
+        },
+        "expected_difficulty": "medium",
+        "notes": "Unrecognized transaction; billing inquiry, not necessarily fraud determination."
+    },
+    {
+        "id": "email_011",
+        "input": "Your checkout page showed free delivery, but the final bill includes a delivery fee.",
+        "expected_output": {
+            "category": "billing",
+            "summary": "The customer disputes a delivery fee that was added despite free delivery being shown at checkout."
+        },
+        "expected_difficulty": "medium",
+        "notes": "Dispute concerns a charge and checkout pricing."
+    },
+    {
+        "id": "email_012",
+        "input": "Can you change my billing cycle from monthly to yearly and tell me the prorated amount?",
+        "expected_output": {
+            "category": "billing",
+            "summary": "The customer requests a billing-cycle change and asks about the prorated cost."
+        },
+        "expected_difficulty": "easy",
+        "notes": "Billing-cycle and proration question."
+    },
+    {
+        "id": "email_013",
+        "input": "I cancelled the add-on, but it is still listed on this month's invoice.",
+        "expected_output": {
+            "category": "billing",
+            "summary": "The customer reports being billed for an add-on after cancelling it."
+        },
+        "expected_difficulty": "medium",
+        "notes": "Post-cancellation charge."
+    },
+    {
+        "id": "email_014",
+        "input": "My payment keeps getting declined, although my bank says the card is working. What should I do?",
+        "expected_output": {
+            "category": "billing",
+            "summary": "The customer reports repeated payment declines despite the bank confirming the card works."
+        },
+        "expected_difficulty": "medium",
+        "notes": "Payment processing issue rather than account login or app defect."
+    },
+    {
+        "id": "email_015",
+        "input": "The discount code SAVE20 was accepted, but the total did not decrease.",
+        "expected_output": {
+            "category": "billing",
+            "summary": "The customer says an accepted discount code was not applied to the order total."
+        },
+        "expected_difficulty": "easy",
+        "notes": "Promotion affects price charged."
+    },
+    {
+        "id": "email_016",
+        "input": "I paid the outstanding balance yesterday. Why does the dashboard still show an amount due?",
+        "expected_output": {
+            "category": "billing",
+            "summary": "The customer reports that the dashboard still shows an outstanding balance after payment."
+        },
+        "expected_difficulty": "medium",
+        "notes": "Payment posting and account balance discrepancy; billing is primary."
+    },
+    {
+        "id": "email_017",
+        "input": "Please explain why I was charged tax twice on the same purchase.",
+        "expected_output": {
+            "category": "billing",
+            "summary": "The customer disputes what appears to be duplicate tax on a purchase."
+        },
+        "expected_difficulty": "easy",
+        "notes": "Tax amount on an invoice is a billing issue."
+    },
+    {
+        "id": "email_018",
+        "input": "The website returns a 500 error whenever I open the reports page.",
+        "expected_output": {
+            "category": "technical",
+            "summary": "The customer reports a server error when accessing the reports page."
+        },
+        "expected_difficulty": "easy",
+        "notes": "HTTP 500 and page failure are technical."
+    },
+    {
+        "id": "email_019",
+        "input": "After the latest update, the search bar freezes and stops accepting input.",
+        "expected_output": {
+            "category": "technical",
+            "summary": "The customer says the search bar freezes after the latest update."
+        },
+        "expected_difficulty": "easy",
+        "notes": "UI malfunction following an update."
+    },
+    {
+        "id": "email_020",
+        "input": "I can sign in, but none of the images on the dashboard load. They just keep spinning.",
+        "expected_output": {
+            "category": "technical",
+            "summary": "The customer can sign in, but dashboard images fail to load."
+        },
+        "expected_difficulty": "medium",
+        "notes": "Login works; the reported issue is application content loading."
+    },
+    {
+        "id": "email_021",
+        "input": "Exporting a CSV gives me an empty file even though the table contains 300 rows.",
+        "expected_output": {
+            "category": "technical",
+            "summary": "The customer reports that CSV exports are empty despite data being present in the table."
+        },
+        "expected_difficulty": "medium",
+        "notes": "Data export functionality defect."
+    },
+    {
+        "id": "email_022",
+        "input": "The Android app closes as soon as I tap the notification settings screen.",
+        "expected_output": {
+            "category": "technical",
+            "summary": "The Android app crashes when the customer opens notification settings."
+        },
+        "expected_difficulty": "easy",
+        "notes": "Reproducible app crash."
+    },
+    {
+        "id": "email_023",
+        "input": "Your API returns status 401 for a request using the token that worked yesterday.",
+        "expected_output": {
+            "category": "technical",
+            "summary": "The customer reports that an API request now returns an unauthorized response using a previously working token."
+        },
+        "expected_difficulty": "medium",
+        "notes": "API authentication response; technical integration issue."
+    },
+    {
+        "id": "email_024",
+        "input": "The page takes nearly two minutes to load, and sometimes it never finishes.",
+        "expected_output": {
+            "category": "technical",
+            "summary": "The customer reports extremely slow page loading and occasional timeouts."
+        },
+        "expected_difficulty": "easy",
+        "notes": "Performance and availability issue."
+    },
+    {
+        "id": "email_025",
+        "input": "I uploaded a PDF, but the preview shows a blank page. The downloaded file is fine.",
+        "expected_output": {
+            "category": "technical",
+            "summary": "The customer reports that PDF previews are blank even though the downloaded file is intact."
+        },
+        "expected_difficulty": "medium",
+        "notes": "Preview rendering defect."
+    },
+    {
+        "id": "email_026",
+        "input": "When I press Save, the button spins forever and my changes are not stored.",
+        "expected_output": {
+            "category": "technical",
+            "summary": "The customer says saving never completes and their changes are not stored."
+        },
+        "expected_difficulty": "easy",
+        "notes": "Save operation malfunction."
+    },
+    {
+        "id": "email_027",
+        "input": "The integration webhook fires three times for one event. This is creating duplicate records.",
+        "expected_output": {
+            "category": "technical",
+            "summary": "The customer reports that one event triggers multiple webhook deliveries and creates duplicate records."
+        },
+        "expected_difficulty": "hard",
+        "notes": "Webhook delivery behaviour and duplicate side effects; requires technical investigation."
+    },
+    {
+        "id": "email_028",
+        "input": "On Safari the menu overlaps the form, but it looks normal in Chrome.",
+        "expected_output": {
+            "category": "technical",
+            "summary": "The customer reports a layout issue in Safari that does not occur in Chrome."
+        },
+        "expected_difficulty": "medium",
+        "notes": "Browser-specific rendering problem."
+    },
+    {
+        "id": "email_029",
+        "input": "I keep seeing 'connection timed out' when syncing, even on a stable network.",
+        "expected_output": {
+            "category": "technical",
+            "summary": "The customer reports sync operations timing out despite having a stable network connection."
+        },
+        "expected_difficulty": "medium",
+        "notes": "Synchronization and network request failure."
+    },
+    {
+        "id": "email_030",
+        "input": "Please change the email address on my profile from old@example.com to new@example.com.",
+        "expected_output": {
+            "category": "account",
+            "summary": "The customer requests an update to the email address associated with their profile."
+        },
+        "expected_difficulty": "easy",
+        "notes": "Profile identity information change."
+    },
+    {
+        "id": "email_031",
+        "input": "I am locked out after too many login attempts. Can you unlock my account?",
+        "expected_output": {
+            "category": "account",
+            "summary": "The customer is locked out after multiple login attempts and requests account access restoration."
+        },
+        "expected_difficulty": "easy",
+        "notes": "Account lockout and access."
+    },
+    {
+        "id": "email_032",
+        "input": "I want to permanently delete my account and all the profile information associated with it.",
+        "expected_output": {
+            "category": "account",
+            "summary": "The customer requests permanent account deletion and removal of associated profile information."
+        },
+        "expected_difficulty": "easy",
+        "notes": "Account lifecycle and data deletion request."
+    },
+    {
+        "id": "email_033",
+        "input": "Can I add my colleague as an administrator on our organization account?",
+        "expected_output": {
+            "category": "account",
+            "summary": "The customer asks to grant administrator access to a colleague on an organization account."
+        },
+        "expected_difficulty": "medium",
+        "notes": "User roles and account permissions."
+    },
+    {
+        "id": "email_034",
+        "input": "My profile is showing someone else's name and phone number. Please correct it.",
+        "expected_output": {
+            "category": "account",
+            "summary": "The customer reports incorrect personal details appearing on their profile and requests correction."
+        },
+        "expected_difficulty": "hard",
+        "notes": "Profile data and possible account association issue; account support is primary."
+    },
+    {
+        "id": "email_035",
+        "input": "I no longer have access to the phone number used for two-factor authentication.",
+        "expected_output": {
+            "category": "account",
+            "summary": "The customer cannot complete two-factor authentication because they no longer have access to the registered phone number."
+        },
+        "expected_difficulty": "medium",
+        "notes": "Account authentication and recovery."
+    },
+    {
+        "id": "email_036",
+        "input": "Please merge my two accounts. One uses my work email and the other uses my personal email.",
+        "expected_output": {
+            "category": "account",
+            "summary": "The customer requests that two accounts registered with different email addresses be merged."
+        },
+        "expected_difficulty": "medium",
+        "notes": "Account consolidation request."
+    },
+    {
+        "id": "email_037",
+        "input": "I received a notice that my account has been suspended, but I do not know why.",
+        "expected_output": {
+            "category": "account",
+            "summary": "The customer asks why their account has been suspended."
+        },
+        "expected_difficulty": "medium",
+        "notes": "Account status and suspension inquiry."
+    },
+    {
+        "id": "email_038",
+        "input": "How do I update the name displayed on my profile after a legal name change?",
+        "expected_output": {
+            "category": "account",
+            "summary": "The customer asks how to update the name displayed on their profile."
+        },
+        "expected_difficulty": "easy",
+        "notes": "Profile information change."
+    },
+    {
+        "id": "email_039",
+        "input": "My team member left the company. How can I remove their access without closing our workspace?",
+        "expected_output": {
+            "category": "account",
+            "summary": "The customer asks how to revoke a former team member's access while keeping the workspace active."
+        },
+        "expected_difficulty": "medium",
+        "notes": "Workspace membership and access permissions."
+    },
+    {
+        "id": "email_040",
+        "input": "I can access the account, but the recovery email shown there is not mine.",
+        "expected_output": {
+            "category": "account",
+            "summary": "The customer reports that an unfamiliar recovery email is associated with their account."
+        },
+        "expected_difficulty": "hard",
+        "notes": "Account security and recovery information discrepancy."
+    },
+    {
+        "id": "email_041",
+        "input": "What are your support hours on weekends?",
+        "expected_output": {
+            "category": "general",
+            "summary": "The customer asks about the company's weekend support hours."
+        },
+        "expected_difficulty": "easy",
+        "notes": "General information request."
+    },
+    {
+        "id": "email_042",
+        "input": "Do you have a mobile app for iOS, or is the service browser-only?",
+        "expected_output": {
+            "category": "general",
+            "summary": "The customer asks whether the service has an iOS mobile app."
+        },
+        "expected_difficulty": "easy",
+        "notes": "Product availability question."
+    },
+    {
+        "id": "email_043",
+        "input": "Could you explain the main differences between the Basic and Pro plans?",
+        "expected_output": {
+            "category": "general",
+            "summary": "The customer requests a comparison of the Basic and Pro plans."
+        },
+        "expected_difficulty": "easy",
+        "notes": "General product and plan information; no specific charge dispute."
+    },
+    {
+        "id": "email_044",
+        "input": "Where can I read your privacy policy and terms of service?",
+        "expected_output": {
+            "category": "general",
+            "summary": "The customer asks where to find the privacy policy and terms of service."
+        },
+        "expected_difficulty": "easy",
+        "notes": "Request for public policy information."
+    },
+    {
+        "id": "email_045",
+        "input": "Is there a way to schedule a product demonstration for our department?",
+        "expected_output": {
+            "category": "general",
+            "summary": "The customer asks how to arrange a product demonstration for their department."
+        },
+        "expected_difficulty": "easy",
+        "notes": "Sales or product information request."
+    },
+    {
+        "id": "email_046",
+        "input": "Which file formats can I upload to the platform?",
+        "expected_output": {
+            "category": "general",
+            "summary": "The customer asks which file formats are supported for uploads."
+        },
+        "expected_difficulty": "easy",
+        "notes": "Capability and documentation question, not a reported upload failure."
+    },
+    {
+        "id": "email_047",
+        "input": "Do you provide onboarding sessions for new customers?",
+        "expected_output": {
+            "category": "general",
+            "summary": "The customer asks whether onboarding sessions are available for new customers."
+        },
+        "expected_difficulty": "easy",
+        "notes": "General service information."
+    },
+    {
+        "id": "email_048",
+        "input": "I would like to suggest adding a dark mode option to the dashboard.",
+        "expected_output": {
+            "category": "general",
+            "summary": "The customer submits a feature request for a dark mode option."
+        },
+        "expected_difficulty": "medium",
+        "notes": "Product feedback and feature request."
+    },
+    {
+        "id": "email_049",
+        "input": "Where can I find the documentation for setting up the platform for a small team?",
+        "expected_output": {
+            "category": "general",
+            "summary": "The customer asks where to find setup documentation for a small team."
+        },
+        "expected_difficulty": "easy",
+        "notes": "Documentation request without a specific technical failure."
+    },
+    {
+        "id": "email_050",
+        "input": "Do you offer a nonprofit program, and what information is needed to apply?",
+        "expected_output": {
+            "category": "general",
+            "summary": "The customer asks whether a nonprofit program exists and what is required to apply."
+        },
+        "expected_difficulty": "medium",
+        "notes": "General eligibility and program information."
+    }
+]

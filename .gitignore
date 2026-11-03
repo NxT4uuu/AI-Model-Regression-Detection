@@ -1,0 +1,24 @@
+# SQLite databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Python virtual environments
+env1/
+venv/
+.venv/
+
+# Secrets
+.env
+.env.*
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Test cache
+.pytest_cache/
+
+# IDE settings
+.vscode/
+.idea/
