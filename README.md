@@ -9,6 +9,7 @@ The AI Model Regression Detection System is a Python-based project designed to d
 The project implements an email classification system as its evaluation target. It compares a baseline prompt version against a candidate version using a labelled golden dataset.
 
 The evaluation pipeline measures:
+
 - Classification accuracy.
 - Generated summary quality using an LLM-as-a-Judge.
 - Summary pass rate.
@@ -39,25 +40,25 @@ The project also includes historical evaluation storage, performance drift detec
 
 ## 3. Technology Stack
 
-| Component | Technology |
-|---|---|
-| Programming Language | Python 3 |
-| LLM API | Groq API |
-| LLM Model | `openai/gpt-oss-20b` |
-| Prompt Configuration | YAML |
-| Dataset Storage | JSON |
-| Evaluation Database | SQLite |
-| Summary Evaluation | LLM-as-a-Judge |
-| HTML Report Generation | Jinja2 |
-| Report Visualization | Chart.js |
-| Notifications | Slack Incoming Webhooks |
-| Testing | Python unittest |
-| Environment Configuration | python-dotenv |
+| Component                 | Technology              |
+| ------------------------- | ----------------------- |
+| Programming Language      | Python 3                |
+| LLM API                   | Groq API                |
+| LLM Model                 | `openai/gpt-oss-20b`  |
+| Prompt Configuration      | YAML                    |
+| Dataset Storage           | JSON                    |
+| Evaluation Database       | SQLite                  |
+| Summary Evaluation        | LLM-as-a-Judge          |
+| HTML Report Generation    | Jinja2                  |
+| Report Visualization      | Chart.js                |
+| Notifications             | Slack Incoming Webhooks |
+| Testing                   | Python unittest         |
+| Environment Configuration | python-dotenv           |
 
 ## 4. Project Structure
 
 ```text
-Project_1/
+AI-Model-Regression-Detection/
 │
 ├── data/
 │   └── golden_dataset.json
@@ -168,6 +169,7 @@ Replace the placeholder values with your actual credentials.
 The project uses a JSON-based golden dataset containing 50 labelled customer support email examples.
 
 Each test case includes:
+
 - Unique test-case ID.
 - Original email input.
 - Expected classification category.
@@ -205,6 +207,7 @@ python -m src.evaluation_runner --prompt prompts/v3.yaml
 ```
 
 The evaluation runner:
+
 - Loads the golden dataset.
 - Loads the selected prompt configuration.
 - Executes email classification.
@@ -228,6 +231,7 @@ python -m src.regression_comparator --baseline v1 --candidate v3
 ```
 
 The comparator identifies:
+
 - Classification regressions.
 - Classification improvements.
 - Unchanged test cases.
@@ -264,17 +268,18 @@ python -m src.deployment_gate
 ```
 
 The decision depends on:
+
 - Regression severity.
 - Evaluation validity.
 - Missing or invalid evaluation records.
 
 Possible decisions include:
 
-| Decision | Meaning |
-|---|---|
-| APPROVED | Candidate passes regression evaluation. |
+| Decision              | Meaning                                           |
+| --------------------- | ------------------------------------------------- |
+| APPROVED              | Candidate passes regression evaluation.           |
 | APPROVED_WITH_WARNING | Candidate is approved with a performance warning. |
-| BLOCKED | Candidate fails the deployment criteria. |
+| BLOCKED               | Candidate fails the deployment criteria.          |
 
 ## 11. Run the Complete Pipeline
 
