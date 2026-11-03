@@ -53,7 +53,11 @@ def run_pipeline(baseline_version="v1", candidate_version="v2"):
     print(f"Message: {decision['message']}")
 
     # Stage 6: Send Slack notification
-    send_slack_notification(comparison, decision)
+    try:
+        send_slack_notification(comparison, decision)
+    except Exception as exc:
+        print(f"\nWARNING: Slack notification failed: {exc}")
+        print("Regression evaluation and deployment decision remain unchanged.")
 
     print("\n------- PIPELINE COMPLETED -------")
 
