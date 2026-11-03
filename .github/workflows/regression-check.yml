@@ -1,0 +1,102 @@
+name: AI Model Regression Check
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "prompts/**"
+      - "src/**"
+      - "tests/**"
+      - "requirements.txt"
+      - ".github/workflows/**"
+
+  workflow_dispatch:
+    inputs:
+      candidate_version:
+        description: "Candidate prompt version (e.g. v2 or v3)"
+        required: true
+        default: "v2"
+
+jobs:
+  regression-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run unit tests
+        run: |
+          python -m unittest discover -s tests -v
+
+      - name: Identify candidate prompt
+        id: candidate
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            VERSION="${{ inputs.candidate_version }}"
+          else
+            CHANGED_FILES=$(git diff --name-only \
+              "origin/${{ github.base_ref }}"...HEAD \
+              -- 'prompts/*.yaml')
+
+            COUNT=$(echo "$CHANGED_FILES" | grep -c . || true)
+
+            if [[ "$COUNT" -eq 0 ]]; then
+              echo "No prompt changes detected. Skipping regression evaluation."
+              echo "run_regression=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+
+            if [[ "$COUNT" -ne 1 ]]; then
+              echo "Expected exactly one modified prompt YAML file."
+              exit 1
+            fi
+
+            FILE=$(echo "$CHANGED_FILES" | head -n 1)
+            VERSION=$(basename "$FILE" .yaml)
+          fi
+
+          if [[ "$VERSION" == "v1" ]]; then
+            echo "Baseline prompt v1 cannot be used as a candidate."
+            exit 1
+          fi
+
+          if [[ ! -f "prompts/${VERSION}.yaml" ]]; then
+            echo "Candidate prompt file not found."
+            exit 1
+          fi
+
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "run_regression=true" >> "$GITHUB_OUTPUT"
+
+      - name: Run regression pipeline
+        if: steps.candidate.outputs.run_regression == 'true'
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          python -m src.pipeline \
+            --baseline v1 \
+            --candidate "${{ steps.candidate.outputs.version }}"
+
+      - name: Upload regression reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: regression-reports
+          path: reports/
+          if-no-files-found: warn
