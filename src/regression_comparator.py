@@ -1,17 +1,12 @@
-
 import argparse
 import json
 
 from .paths import REPORTS_DIR
-
-
 def load_evaluation(filename):
     file_path = REPORTS_DIR / filename
 
     if not file_path.exists():
-        raise FileNotFoundError(
-            f"Evaluation file not found: {file_path}"
-        )
+        raise FileNotFoundError(f"Evaluation file not found: {file_path}")
 
     with open(file_path, "r", encoding="utf-8") as file:
         return json.load(file)
@@ -26,24 +21,18 @@ def validate_evaluation(evaluation, label):
 
     for field in required_fields:
         if field not in evaluation:
-            raise ValueError(
-                f"{label} evaluation is missing field: {field}"
-            )
+            raise ValueError(f"{label} evaluation is missing field: {field}")
 
     results = evaluation["results"]
 
     if not isinstance(results, list) or not results:
-        raise ValueError(
-            f"{label} evaluation contains no valid results."
-        )
+        raise ValueError(f"{label} evaluation contains no valid results.")
 
     test_ids = []
 
     for result in results:
         if not isinstance(result, dict):
-            raise ValueError(
-                f"{label} contains an invalid result record."
-            )
+            raise ValueError(f"{label} contains an invalid result record.")
 
         required_result_fields = [
             "test_case_id",
@@ -159,16 +148,6 @@ def compare_evaluations(baseline, candidate):
         else None
     )
 
-    category_severity = classify_regression_severity(accuracy_delta, warning_threshold=0.03, critical_threshold=0.08)
-    summary_severity = classify_regression_severity(summary_pass_rate_delta, warning_threshold=0.03, critical_threshold=0.08)
-    severity_levels = {
-        "passed": 0,
-        "warning": 1,
-        "critical": 2,
-        "insufficient_data": 3
-    }
-
-    severity = max([category_severity, summary_severity], key=lambda level: severity_levels[level])
     # Compare every category found in either evaluation.
     all_categories = (set(baseline.get("category_metrics", {})) | set(candidate.get("category_metrics", {})))
     category_comparison = {}
@@ -210,6 +189,12 @@ def compare_evaluations(baseline, candidate):
         elif old_pass == new_pass:
             summary_unchanged.append(test_id)
 
+    category_severity = classify_regression_severity(accuracy_delta, regression_count=len(regressions), warning_threshold=0.03, critical_threshold=0.08)
+    summary_severity = classify_regression_severity(summary_pass_rate_delta, regression_count=len(summary_regressions), warning_threshold=0.03, critical_threshold=0.08)
+    summary_score_severity = classify_regression_severity(summary_score_delta, regression_count=0, warning_threshold=0.03, critical_threshold=0.08)
+    severity_levels = {"passed": 0, "warning": 1, "critical": 2, "insufficient_data": 3}
+    severity = max([category_severity, summary_severity, summary_score_severity], key=lambda level: severity_levels[level])
+    
     return {
         "baseline_version": baseline["prompt_version"],
         "candidate_version": candidate["prompt_version"],
@@ -240,32 +225,38 @@ def compare_evaluations(baseline, candidate):
         "summary_regressions": summary_regressions,
         "summary_improvements": summary_improvements,
         "summary_unchanged": summary_unchanged,
-
-        "summary_severity": summary_severity
+        "summary_severity": summary_severity,
+        "summary_score_severity": summary_score_severity
     }
 
-
-def classify_regression_severity(accuracy_delta, warning_threshold=0.03, critical_threshold=0.08):
-
+def classify_regression_severity(accuracy_delta,regression_count=0,warning_threshold=0.03,critical_threshold=0.08):
     if warning_threshold < 0 or critical_threshold < 0:
         raise ValueError("Thresholds cannot be negative.")
 
     if critical_threshold <= warning_threshold:
         raise ValueError("Critical threshold must be greater than warning threshold.")
 
+    if regression_count < 0:
+        raise ValueError("Regression count cannot be negative.")
+
     if accuracy_delta is None:
         return "insufficient_data"
 
     degradation = max(0.0, -accuracy_delta)
 
+    # Determine severity using degradation thresholds.
     if degradation > critical_threshold:
-        return "critical"
+        severity = "critical"
+    elif degradation > warning_threshold:
+        severity = "warning"
+    else:
+        severity = "passed"
 
-    if degradation > warning_threshold:
-        return "warning"
+    # Any individual regression must trigger at least a warning.
+    if regression_count > 0 and severity == "passed":
+        severity = "warning"
 
-    return "passed"
-
+    return severity
 
 def main():
 
