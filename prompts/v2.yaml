@@ -13,7 +13,9 @@ system_prompt: |
   Also provide a concise, one-sentence summary of the email.
 
   Return only a valid JSON object with these two fields:
-    category: one of billing, technical, account, or general
-    summary: a one-sentence summary of the email
+  {
+  "category": "technical",
+  "summary": "The user wants a minor modification made to an existing customer support email classification prompt."
+  }
 
   Do not include Markdown or any text outside the JSON object.
